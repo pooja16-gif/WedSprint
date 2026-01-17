@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EngiTrack Pro | Engineering Ecosystem</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --accent: #10b981;
+            --dark: #0f172a;
+            --light-bg: #f8fafc;
+            --glass: rgba(255, 255, 255, 0.9);
+            --header-height: 80px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--light-bg); color: var(--dark); overflow-x: hidden; }
+
+        /* --- LOGIN OVERLAY --- */
+        #login-overlay {
+            position: fixed; inset: 0; background: var(--dark); z-index: 3000;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .login-box {
+            background: white; padding: 3rem; border-radius: 30px; text-align: center; width: 400px;
+        }
+
+        /* --- HORIZONTAL HEADER --- */
+        header {
+            height: var(--header-height); background: var(--glass); backdrop-filter: blur(10px);
+            border-bottom: 1px solid #e2e8f0; display: flex; align-items: center;
+            justify-content: space-between; padding: 0 5%; position: sticky; top: 0; z-index: 1000;
+        }
+        .logo { font-size: 1.5rem; font-weight: 800; color: var(--primary); text-decoration: none; }
+        
+        nav { display: flex; gap: 30px; }
+        .nav-link { 
+            text-decoration: none; color: var(--dark); font-weight: 600; font-size: 0.95rem; 
+            cursor: pointer; transition: 0.3s; position: relative;
+        }
+        .nav-link:hover, .nav-link.active { color: var(--primary); }
+        .nav-link.active::after {
+            content: ''; position: absolute; bottom: -5px; left: 0; width: 100%; height: 2px; background: var(--primary);
+        }
+
+        .header-actions { display: flex; gap: 15px; align-items: center; }
+
+        /* --- PAGE SYSTEM --- */
+        .page { display: none; padding: 40px 5%; animation: fadeIn 0.5s ease; }
+        .page.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- HERO COMPONENTS --- */
+        .hero { 
+            background: linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.7)), url('https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=2070');
+            background-size: cover; background-position: center; height: 500px;
+            border-radius: 30px; display: flex; flex-direction: column; justify-content: center;
+            padding: 0 60px; color: white; margin-bottom: 40px;
+        }
+
+        /* --- DASHBOARD ELEMENTS --- */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+        .card { background: white; padding: 2rem; border-radius: 24px; border: 1px solid #e2e8f0; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
+        
+        .timer-circle {
+            width: 200px; height: 200px; border: 10px solid var(--primary-light);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            margin: 20px auto; font-size: 2.5rem; font-weight: 800; border-top-color: var(--primary);
+        }
+
+        .btn { 
+            background: var(--primary); color: white; border: none; padding: 12px 28px; 
+            border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.3s;
+        }
+
+        /* --- SYMPOSIUM BANNER --- */
+        .symposium-card {
+            background: #fffbeb; border: 2px solid #fde68a; padding: 2rem; border-radius: 24px;
+            display: flex; justify-content: space-between; align-items: center; margin-top: 40px;
+        }
+
+        @media (max-width: 768px) { nav { display: none; } }
+    </style>
+</head>
+<body>
+
+    <div id="login-overlay">
+        <div class="login-box">
+            <h1 style="color: var(--primary); margin-bottom: 10px;">EngiTrack</h1>
+            <p style="color: var(--text-dim); margin-bottom: 25px;">Student Portal Access</p>
+            <input type="text" placeholder="Student ID" id="sid" style="width:100%; padding:15px; border:1px solid #ddd; border-radius:12px; margin-bottom:15px;">
+            <button class="btn" style="width:100%;" onclick="doLogin()">Enter Workspace</button>
+        </div>
+    </div>
+
+    <header id="main-header" style="display:none;">
+        <a href="#" class="logo">ENGITRACK PRO</a>
+        <nav>
+            <span class="nav-link active" onclick="showPage('dash', this)">Dashboard</span>
+            <span class="nav-link" onclick="showPage('vault', this)">Project Vault</span>
+            <span class="nav-link" onclick="showPage('focus', this)">Focus Timer</span>
+            <span class="nav-link" onclick="showPage('support', this)">Support Hub</span>
+        </nav>
+        <div class="header-actions">
+            <span id="user-tag" style="font-weight:700; font-size: 0.8rem;">STUDENT</span>
+            <button class="btn" style="padding: 8px 20px; font-size: 0.8rem;" onclick="location.reload()">Logout</button>
+        </div>
+    </header>
+
+    <div id="content-area" style="display:none;">
+        
+        <div id="dash" class="page active">
+            <div class="hero">
+                <span style="background: var(--accent); color: white; padding: 5px 15px; border-radius: 20px; width: fit-content; font-size: 0.8rem; font-weight: 700;">LIVE SESSION</span>
+                <h1 style="font-size: 3.5rem; margin: 15px 0;">Welcome Back, Engineer.</h1>
+                <p style="max-width: 500px; opacity: 0.9;">You have 2 Lab reports pending and a Tech Symposium coming up. Stay focused.</p>
+            </div>
+
+            <div class="grid">
+                <div class="card">
+                    <h3>Priority Assignments</h3>
+                    <div style="margin-top:20px;">
+                        <p>Thermodynamics Lab <span style="float:right; color:var(--primary);">85%</span></p>
+                        <div style="height:8px; background:#f1f5f9; border-radius:10px; margin:10px 0;"><div style="width:85%; height:100%; background:var(--primary); border-radius:10px;"></div></div>
+                        <p>CAD Engine Design <span style="float:right; color:var(--primary);">40%</span></p>
+                        <div style="height:8px; background:#f1f5f9; border-radius:10px; margin:10px 0;"><div style="width:40%; height:100%; background:var(--primary); border-radius:10px;"></div></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Today's Schedule</h3>
+                    <div style="margin-top:20px;">
+                        <div style="padding: 10px; background: var(--light-bg); border-radius: 12px; margin-bottom:10px;">
+                            <strong>09:30 AM</strong> - Robotics Lab (Hall 4)
+                        </div>
+                        <div style="padding: 10px; background: var(--light-bg); border-radius: 12px;">
+                            <strong>11:45 AM</strong> - Fluid Mechanics (L)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="text-align: center;">
+                    <h3>Daily Focus Score</h3>
+                    <div style="font-size: 4rem; font-weight: 800; color: var(--accent);">94</div>
+                    <p style="color: var(--text-dim);">Excellent performance today!</p>
+                </div>
+            </div>
+
+            <div class="symposium-card">
+                <div>
+                    <h2 style="color: #92400e;">Upcoming Tech Symposium 2026</h2>
+                    <p style="color: #b45309;">Registration ends in 48 hours. Submit your research abstracts now.</p>
+                </div>
+                <button class="btn" style="background: #92400e;">Register Today</button>
+            </div>
+        </div>
+
+        <div id="vault" class="page">
+            <h1 style="margin-bottom: 30px;">Secure Project Vault</h1>
+            <div class="grid">
+                <div class="card">📁 Final Thesis.pdf</div>
+                <div class="card">📁 LabData_Export.csv</div>
+                <div class="card" style="border: 2px dashed #cbd5e1; display:flex; justify-content:center; align-items:center;">+ Upload New</div>
+            </div>
+        </div>
+
+        <div id="focus" class="page" style="text-align: center;">
+            <h1>Deep Work Session</h1>
+            <div class="card" style="max-width: 400px; margin: 40px auto;">
+                <div class="timer-circle" id="timer">25:00</div>
+                <button class="btn" onclick="startTimer()">Start Pomodoro</button>
+                <button class="btn" style="background: #64748b;" onclick="resetTimer()">Reset</button>
+            </div>
+        </div>
+
+        <div id="support" class="page">
+            <h1>Support Hub</h1>
+            <div class="card">
+                <h3>Contact Department</h3>
+                <p>Email: support.eng@university.edu</p>
+                <p>Office Hours: Mon-Fri, 10 AM - 4 PM</p>
+                <button class="btn" style="margin-top:20px;">Open Support Ticket</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // NAVIGATION LOGIC
+        function showPage(pageId, element) {
+            // Update Navigation UI
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            element.classList.add('active');
+
+            // Switch Pages
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        // LOGIN LOGIC
+        function doLogin() {
+            const user = document.getElementById('sid').value || "Guest Student";
+            document.getElementById('user-tag').innerText = user.toUpperCase();
+            document.getElementById('login-overlay').style.display = 'none';
+            document.getElementById('main-header').style.display = 'flex';
+            document.getElementById('content-area').style.display = 'block';
+        }
+
+        // TIMER LOGIC
+        let time = 1500;
+        let running = false;
+        function startTimer() {
+            if(running) return;
+            running = true;
+            const timer = setInterval(() => {
+                if(time <= 0) { clearInterval(timer); running = false; }
+                time--;
+                const m = Math.floor(time/60);
+                const s = time % 60;
+                document.getElementById('timer').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+            }, 1000);
+        }
+        function resetTimer() { location.reload(); }
+    </script>
+</body>
+</html>
